@@ -1,3 +1,11 @@
+.cache
+.vscode
+build
+epoll.cpp
+example1.cpp
+TODO
+TOLEARN.md
+
 # Prerequisites
 *.d
 
