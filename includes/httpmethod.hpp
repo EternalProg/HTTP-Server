@@ -28,30 +28,9 @@ class HttpMethod {
   // Prevent usage: if(httpMethod)
   explicit operator bool() const = delete;
 
-  static std::string to_string(HttpMethod HttpMethod) {
-    switch (HttpMethod) {
-      case GET:
-        return "GET";
-      case POST:
-        return "POST";
-      case PUT:
-        return "PUT";
-      case DELETE:
-        return "DELETE";
-      case HEAD:
-        return "HEAD";
-      case OPTIONS:
-        return "OPTIONS";
-      case PATCH:
-        return "PATCH";
-      case CONNECT:
-        return "CONNECT";
-      case TRACE:
-        return "TRACE";
-      default:
-        return "UNKNOWN";
-    }
-  }
+  static std::string toString(HttpMethod HttpMethod);
+
+  static HttpMethod fromString(const std::string& str_method);
 
  private:
   Value value;
