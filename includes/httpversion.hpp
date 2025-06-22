@@ -24,20 +24,9 @@ class HttpVersion {
   // Prevent usage: if(httpMethod)
   explicit operator bool() const = delete;
 
-  static std::string to_string(HttpVersion HttpVersion) {
-    switch (HttpVersion) {
-      case HTTP_1_0:
-        return "HTTP/1.0";
-      case HTTP_1_1:
-        return "HTTP/1.1";
-      case HTTP_2_0:
-        return "HTTP/2.0";
-      case HTTP_3_0:
-        return "HTTP/3.0";
-      default:
-        return "UNKNOWN";
-    }
-  }
+  static std::string toString(HttpVersion HttpVersion);
+
+  static HttpVersion fromString(const std::string& str_version);
 
  private:
   Value value;
