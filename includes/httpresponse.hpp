@@ -2,6 +2,7 @@
 #define SHTTP_RESPONSE_HPP
 
 #include <httpversion.hpp>
+#include <ostream>
 #include <unordered_map>
 
 namespace shttp {
@@ -125,6 +126,15 @@ class HttpResponse {
   void setVersion(HttpVersion version) { version_ = version; }
 
   std::string toString() const;
+
+  HttpVersion getVersion() const noexcept { return version_; }
+  HttpStatusCode getStatusCode() const noexcept { return status_code_; }
+  const Headers& getHeaders() const noexcept { return headers_; }
+  const Content& getBody() const noexcept { return body_; }
+  Content& getBody() noexcept { return body_; }
+  Content& getHeaderContent(const Header& header) { return headers_[header]; }
+
+  friend std::ostream& operator<<(std::ostream& out, const HttpResponse& res);
 
  private:
   HttpVersion version_ = HttpVersion::HTTP_1_1;

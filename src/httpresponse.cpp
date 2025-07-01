@@ -1,4 +1,5 @@
 #include <httpresponse.hpp>
+#include <ostream>
 
 namespace shttp {
 
@@ -235,6 +236,11 @@ std::string HttpResponse::toString() const {
   result += body_;
 
   return result;
+}
+
+std::ostream& operator<<(std::ostream& out, const HttpResponse& res) {
+  out << res.toString();
+  return out;
 }
 
 }  // namespace shttp
