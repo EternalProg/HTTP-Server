@@ -6,7 +6,7 @@
 namespace shttp {
 
 class HttpMethod {
- public:
+public:
   enum Value : uint8_t {
     GET,
     POST,
@@ -17,7 +17,7 @@ class HttpMethod {
     PATCH,
     CONNECT,
     TRACE,
-    UNKNOWN  // For unrecognized methods
+    UNKNOWN // For unrecognized methods
   };
 
   HttpMethod() = default;
@@ -30,11 +30,15 @@ class HttpMethod {
 
   static std::string toString(HttpMethod HttpMethod);
 
-  static HttpMethod fromString(const std::string& str_method);
+  static HttpMethod fromString(const std::string &str_method);
 
- private:
+private:
   Value value;
 };
 
-}  // namespace shttp
+struct HttpMethodHash {
+  size_t operator()(HttpMethod method) const noexcept;
+};
+
+} // namespace shttp
 #endif

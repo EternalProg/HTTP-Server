@@ -1,53 +1,62 @@
+#include <algorithm>
+#include <cctype>
 #include <httpmethod.hpp>
 #include <string>
 
 namespace shttp {
 std::string HttpMethod::toString(HttpMethod HttpMethod) {
   switch (HttpMethod) {
-    case GET:
-      return "GET";
-    case POST:
-      return "POST";
-    case PUT:
-      return "PUT";
-    case DELETE:
-      return "DELETE";
-    case HEAD:
-      return "HEAD";
-    case OPTIONS:
-      return "OPTIONS";
-    case PATCH:
-      return "PATCH";
-    case CONNECT:
-      return "CONNECT";
-    case TRACE:
-      return "TRACE";
-    default:
-      return "UNKNOWN";
+  case GET:
+    return "GET";
+  case POST:
+    return "POST";
+  case PUT:
+    return "PUT";
+  case DELETE:
+    return "DELETE";
+  case HEAD:
+    return "HEAD";
+  case OPTIONS:
+    return "OPTIONS";
+  case PATCH:
+    return "PATCH";
+  case CONNECT:
+    return "CONNECT";
+  case TRACE:
+    return "TRACE";
+  default:
+    return "UNKNOWN";
   }
 }
 
-HttpMethod HttpMethod::fromString(const std::string& str_method) {
-  if (str_method == "GET") {
+HttpMethod HttpMethod::fromString(const std::string &str_method) {
+  std::string method = str_method;
+  std::transform(method.begin(), method.end(), method.begin(),
+                 [](unsigned char c) { return std::toupper(c); });
+  if (method == "GET") {
     return HttpMethod(GET);
-  } else if (str_method == "POST") {
+  } else if (method == "POST") {
     return HttpMethod(POST);
-  } else if (str_method == "PUT") {
+  } else if (method == "PUT") {
     return HttpMethod(PUT);
-  } else if (str_method == "DELETE") {
+  } else if (method == "DELETE") {
     return HttpMethod(DELETE);
-  } else if (str_method == "HEAD") {
+  } else if (method == "HEAD") {
     return HttpMethod(HEAD);
-  } else if (str_method == "OPTIONS") {
+  } else if (method == "OPTIONS") {
     return HttpMethod(OPTIONS);
-  } else if (str_method == "PATCH") {
+  } else if (method == "PATCH") {
     return HttpMethod(PATCH);
-  } else if (str_method == "CONNECT") {
+  } else if (method == "CONNECT") {
     return HttpMethod(CONNECT);
-  } else if (str_method == "TRACE") {
+  } else if (method == "TRACE") {
     return HttpMethod(TRACE);
   }
   return HttpMethod(UNKNOWN);
 }
 
-}  // namespace shttp
+size_t HttpMethodHash::operator()(HttpMethod method) const noexcept {
+  return static_cast<size_t>(method);
+}
+
+} // namespace shttp
