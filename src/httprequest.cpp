@@ -7,7 +7,12 @@ using shttp::HttpRequest;
 using shttp::utils::copy_trim;
 
 // Maybe should rewrite it using string_view
-HttpRequest::HttpRequest(const std::string& raw_request) {
+HttpRequest::HttpRequest(const std::string &raw_request) {
+  // parse http
+  parse(raw_request);
+}
+
+void HttpRequest::parse(const std::string &raw_request) {
   // parse http
   std::istringstream isstream(raw_request);
   std::string line;
@@ -26,10 +31,13 @@ HttpRequest::HttpRequest(const std::string& raw_request) {
   // Headers (key-value pair)
   while (getline(isstream, line)) {
     size_t colon = line.find(':');
-    if (colon != std::string::npos && line != "\r") {
+    if (colon != std::string::npos) {
       Header header = line.substr(0, colon);
       Content content = line.substr(colon + 1);
       headers_[copy_trim(header)] = copy_trim(content);
+    } else if (!line.empty() && line.back() == '\r') {
+      line.pop_back();
+      break;
     }
   }
 
@@ -40,7 +48,7 @@ HttpRequest::HttpRequest(const std::string& raw_request) {
 std::string HttpRequest::toString() const noexcept {
   std::string result = HttpMethod::toString(method_) + " " + uri_ + " " +
                        HttpVersion::toString(version_) + "\n";
-  for (const auto& [header, content] : headers_) {
+  for (const auto &[header, content] : headers_) {
     result += header + ": " + content + "\n";
   }
   result += body_ + "\n";
