@@ -45,23 +45,24 @@ build() {
 
 # --- Main logic ---
 case "$ARG" in
-  debug|d)
-    build DEBUG_CONFIG
-    ;;
-  release|r)
-    build RELEASE_CONFIG
-    ;;
-  run)
-    build DEBUG_CONFIG
-    ./build/${DEBUG_CONFIG[DIR]}/HTTP_SERVER
-    ;;
-  test)
-    build DEBUG_CONFIG
-    info "Running tests"
-    ctest --test-dir build/debug/tests
-    ;;
-  *)
-    error "Unknown build mode: '$ARG'"
-    usage
-    ;;
+debug | d)
+  build DEBUG_CONFIG
+  ;;
+release | r)
+  build RELEASE_CONFIG
+  ;;
+run)
+  build DEBUG_CONFIG
+  ./build/${DEBUG_CONFIG[DIR]}/HTTP_SERVER
+  ;;
+test)
+  build DEBUG_CONFIG
+  info "Running tests"
+  ./build/debug/tests/Tests --gtest_color=yes
+#  ctest --test-dir build/debug/tests --output-on-failure --force-new-ctest-process --gtest_color=yes --gtest_output=plain
+  ;;
+*)
+  error "Unknown build mode: '$ARG'"
+  usage
+  ;;
 esac
