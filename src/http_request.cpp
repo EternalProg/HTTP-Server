@@ -1,5 +1,5 @@
-#include <httprequest.hpp>
-#include <httpversion.hpp>
+#include <http_request.hpp>
+#include <http_version.hpp>
 #include <sstream>
 #include <utils.hpp>
 

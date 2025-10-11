@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <httpmethod.hpp>
+#include <http_method.hpp>
 #include <string>
 
 using namespace shttp;
