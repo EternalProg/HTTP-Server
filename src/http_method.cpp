@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <cctype>
-#include <httpmethod.hpp>
+#include <http_method.hpp>
 #include <string>
 
 namespace shttp {

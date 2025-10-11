@@ -2,6 +2,7 @@
 #define SHTTP_SERVER_HPP
 
 #include <fcntl.h>
+#include <http_method.hpp>
 #include <netdb.h>
 #include <sys/epoll.h>
 #include <sys/socket.h>
@@ -10,9 +11,9 @@
 
 #include <chrono>
 #include <functional>
-#include <httprequest.hpp>
-#include <httpresponse.hpp>
-#include <httpserverresult.hpp>
+#include <http_request.hpp>
+#include <http_response.hpp>
+#include <http_server_result.hpp>
 #include <iostream>
 #include <thread>
 #include <thread_pool.hpp>
@@ -23,28 +24,25 @@ namespace shttp {
 constexpr size_t MAX_EVENTS = 10;
 
 using file_descriptor_t = int;
-using ResponseCallback = std::function<void(const HttpRequest&, HttpResponse&)>;
+using ResponseCallback =
+    std::function<void(const HttpRequest &, HttpResponse &)>;
 using Path = std::string;
-
-namespace {
-void setNonBlocking(int fd) {
-  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
-}
-}  // namespace
+using RouteMap =
+    std::unordered_map<HttpMethod, ResponseCallback, HttpMethodHash>;
 
 // TCP connection
 class HttpServer {
- public:
+public:
   inline static uint32_t BUFFER_SIZE = 4096;
   // HttpServer() = default;
   explicit HttpServer(uint16_t port,
                       uint16_t thread_count = std::max(
                           1u, std::thread::hardware_concurrency() - 1));
 
-  HttpServer(const HttpServer&) = delete;
-  HttpServer& operator=(const HttpServer&) = delete;
-  HttpServer(HttpServer&&) = delete;
-  HttpServer& operator=(HttpServer&&) = delete;
+  HttpServer(const HttpServer &) = delete;
+  HttpServer &operator=(const HttpServer &) = delete;
+  HttpServer(HttpServer &&) = delete;
+  HttpServer &operator=(HttpServer &&) = delete;
 
   ~HttpServer() {
     close(server_fd_);
@@ -57,15 +55,16 @@ class HttpServer {
 
   HttpServerResult run();
 
-  void setStaticRoot(const Path& path) noexcept { static_root_ = path; }
-  void setStaticRoot(Path&& path) noexcept { static_root_ = std::move(path); }
+  void setStaticRoot(const Path &path) noexcept { static_root_ = path; }
+  void setStaticRoot(Path &&path) noexcept { static_root_ = std::move(path); }
 
   uint16_t getPort() const noexcept { return port_; }
 
- private:
+private:
+  std::unordered_map<Path, RouteMap> route_table_;
   ThreadPool thread_pool_;
-  ResponseCallback request_handler_ = [](const HttpRequest& request,
-                                         HttpResponse& response) {
+  ResponseCallback request_handler_ = [](const HttpRequest &request,
+                                         HttpResponse &response) {
     std::cout << request;
     response.setBody("Hello from HTTP Server\n");
   };
@@ -75,15 +74,16 @@ class HttpServer {
   epoll_event ev{}, events[MAX_EVENTS];
   uint16_t port_ = 8080;
 
- private:
+private:
   HttpServerResult startServer(uint16_t port) noexcept;
   void configureEpoll();
   void acceptClientConnection();
   void proccesRequest(size_t event_index);
   void startEpollLoop();
-  bool handleStaticFiles(const HttpRequest& request, HttpResponse& response);
+  bool handleStaticFiles(const HttpRequest &request, HttpResponse &response);
+  std::string recv_request(size_t client_fd);
 };
 
-}  // namespace shttp
+} // namespace shttp
 
 #endif

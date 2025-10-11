@@ -7,11 +7,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/includes)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
+set(UTIL_DIR ${CMAKE_SOURCE_DIR}/utils)
 
 file(GLOB_RECURSE SOURCES "${SRC_DIR}/*.cpp")
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
-target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR} ${UTIL_DIR})
 
 include(FetchContent)
 FetchContent_Declare(

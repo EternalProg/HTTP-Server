@@ -4,12 +4,12 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
-#include <httpserverresult.hpp>
+#include <http_server_result.hpp>
 #include <optional>
 #include <sstream>
 #include <string>
-#include <utils.hpp>
 #include <vector>
+
 namespace shttp::utils {
 
 // trim from start (in place)
